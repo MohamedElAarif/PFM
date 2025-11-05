@@ -1,13 +1,10 @@
-import { Card,CardContent,Typography,Button,IconButton,Box,Skeleton } from '@mui/material';
+import { Card, CardContent, Typography, Button, IconButton, Box, Skeleton } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  addToFavorite,
-  removeFromFavorite,
-} from '../redux/slices/favoriteSlice.js';
+import { addToFavorite, removeFromFavorite } from '../redux/slices/favoriteSlice.js';
 
 export default function BookCard({ bookey, img, title, loading = false }) {
   const list = useSelector((state) => state.favorite.list);
@@ -35,7 +32,6 @@ export default function BookCard({ bookey, img, title, loading = false }) {
         position: 'relative',
       }}
     >
-
       {/* Cover Image Area */}
       <Box
         sx={{
@@ -47,7 +43,7 @@ export default function BookCard({ bookey, img, title, loading = false }) {
           borderColor: 'divider',
         }}
       >
-        {/* Skeleton placeholder while loading or image not loaded */}
+        {/* Skeleton placeholder while loading */}
         {(loading || !imageLoaded) && (
           <Skeleton
             variant="rectangular"
@@ -58,23 +54,34 @@ export default function BookCard({ bookey, img, title, loading = false }) {
           />
         )}
 
-        {!loading && img && (
+        {/* Image */}
+        {!loading && (
           <img
-            src={img}
+            src={img || '/placeholder.jpg'}
             alt={title}
             loading="lazy"
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageLoaded(true)}
+            onLoad={() => {
+              console.log('✅ Image loaded:', img);
+              setImageLoaded(true);
+            }}
+            onError={() => {
+              console.warn('⚠️ Image failed:', img);
+              setImageLoaded(true);
+            }}
             style={{
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              display: imageLoaded ? 'block' : 'none',
-              transition: 'opacity 0.3s ease',
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+              position: 'absolute',
+              top: 0,
+              left: 0,
             }}
           />
         )}
 
+        {/* Favorite icon */}
         {!loading && (
           <IconButton
             onClick={() => handleClick(bookey)}
@@ -84,6 +91,7 @@ export default function BookCard({ bookey, img, title, loading = false }) {
               right: 8,
               backgroundColor: 'rgba(255,255,255,0.7)',
               '&:hover': { backgroundColor: 'rgba(255,255,255,0.9)' },
+              zIndex: 2,
             }}
             size="small"
           >
@@ -96,7 +104,7 @@ export default function BookCard({ bookey, img, title, loading = false }) {
         )}
       </Box>
 
-        {/* Title  */}
+      {/* Title */}
       <CardContent
         sx={{
           textAlign: 'center',
