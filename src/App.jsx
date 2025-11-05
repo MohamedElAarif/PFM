@@ -11,7 +11,6 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="*" element={<BooksHome />} />
         <Route path="/" element={<BooksHome />} />
         <Route path="/:subject" element={<BooksBySubject />} />
         <Route path="/works/:ISBN" element={<BookDetails />} />
